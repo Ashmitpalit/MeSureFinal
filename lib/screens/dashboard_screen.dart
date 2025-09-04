@@ -16,7 +16,7 @@ class DashboardScreen extends StatelessWidget {
           children: [
             Icon(Icons.monitor_heart, size: 28),
             SizedBox(width: 8),
-            Text('Health Monitor'),
+            Text('MeSure'),
           ],
         ),
         backgroundColor: Colors.blue[600],

@@ -26,7 +26,7 @@ class PPGApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MedicationProvider()),
       ],
       child: MaterialApp(
-        title: 'PPG Health Monitor',
+        title: 'MeSure',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.blue,
@@ -109,7 +109,7 @@ class _AppInitializerState extends State<AppInitializer> {
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('Initializing Health Monitor...'),
+              Text('Initializing MeSure...'),
             ],
           ),
         ),

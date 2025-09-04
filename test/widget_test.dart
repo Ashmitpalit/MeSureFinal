@@ -15,6 +15,6 @@ void main() {
     await tester.pumpWidget(const PPGApp());
 
     // Verify that the app loads
-    expect(find.text('Health Monitor'), findsOneWidget);
+    expect(find.text('MeSure'), findsOneWidget);
   });
 }
