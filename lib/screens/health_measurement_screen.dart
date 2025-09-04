@@ -236,41 +236,46 @@ class _HealthMeasurementScreenState extends State<HealthMeasurementScreen> {
             flex: 2,
             child: Container(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Countdown timer
-                  if (_isMeasuring) _buildCountdownTimer(),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Countdown timer
+                    if (_isMeasuring) _buildCountdownTimer(),
 
-                  Text(
-                    _statusMessage,
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 16),
 
-                  // Current measurement display
-                  if (_currentMeasurements.isNotEmpty)
-                    _buildMeasurementDisplay(),
+                    Text(
+                      _statusMessage,
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
 
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 16),
 
-                  // Control buttons
-                  if (!_isMeasuring)
-                    ElevatedButton.icon(
-                      onPressed: _isInitialized ? _startMeasurement : null,
-                      icon: const Icon(Icons.play_arrow),
-                      label: const Text('Start Measurement'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
+                    // Current measurement display
+                    if (_currentMeasurements.isNotEmpty)
+                      _buildMeasurementDisplay(),
+
+                    const SizedBox(height: 16),
+
+                    // Control buttons
+                    if (!_isMeasuring)
+                      ElevatedButton.icon(
+                        onPressed: _isInitialized ? _startMeasurement : null,
+                        icon: const Icon(Icons.play_arrow),
+                        label: const Text('Start Measurement'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

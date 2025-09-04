@@ -64,7 +64,10 @@ class DatabaseHelper {
   // Health Metrics CRUD operations
   Future<int> insertHealthMetric(HealthMetric metric) async {
     final db = await database;
-    return await db.insert('health_metrics', metric.toMap());
+    // Remove the id from the map to let SQLite auto-generate it
+    final map = metric.toMap();
+    map.remove('id');
+    return await db.insert('health_metrics', map);
   }
 
   Future<List<HealthMetric>> getHealthMetrics({

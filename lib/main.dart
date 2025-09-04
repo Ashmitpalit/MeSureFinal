@@ -48,6 +48,7 @@ class PPGApp extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
           ),
+          iconTheme: const IconThemeData(color: Colors.blue, size: 24),
         ),
         home: const AppInitializer(),
         debugShowCheckedModeBanner: false,

@@ -87,23 +87,48 @@ class CameraService {
   void _processImage(CameraImage image) {
     if (!_isAnalyzing) return;
 
-    // For now, we'll simulate PPG data instead of processing actual camera images
-    // This avoids the complex image format conversion issues
-    _simulatePPGData();
+    // Convert CameraImage to Uint8List for processing
+    final imageData = _convertCameraImageToUint8List(image);
+
+    // Add frame to PPG analyzer for real analysis
+    _ppgAnalyzer.addFrame(imageData, image.width, image.height);
   }
 
-  void _simulatePPGData() {
-    // Simulate PPG data for demonstration
-    final now = DateTime.now().millisecondsSinceEpoch.toDouble();
-    final redValue = 100 + 20 * sin(now / 1000);
-    final greenValue = 80 + 15 * sin(now / 1000);
-    final blueValue = 60 + 10 * sin(now / 1000);
+  Uint8List _convertCameraImageToUint8List(CameraImage image) {
+    // Convert YUV420 format to RGB
+    final int width = image.width;
+    final int height = image.height;
 
-    _ppgAnalyzer.addFrame(
-      Uint8List(0), // Empty data for simulation
-      640, // Simulated width
-      480, // Simulated height
-    );
+    final int uvRowStride = image.planes[1].bytesPerRow;
+    final int uvPixelStride = image.planes[1].bytesPerPixel!;
+
+    // Create RGB buffer
+    final Uint8List rgb = Uint8List(width * height * 3);
+
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        final int yIndex = y * width + x;
+        final int uvIndex = (y ~/ 2) * uvRowStride + (x ~/ 2) * uvPixelStride;
+
+        final int yValue = image.planes[0].bytes[yIndex];
+        final int uValue = image.planes[1].bytes[uvIndex];
+        final int vValue = image.planes[2].bytes[uvIndex];
+
+        // Convert YUV to RGB
+        int r = (yValue + 1.402 * (vValue - 128)).round().clamp(0, 255);
+        int g = (yValue - 0.344136 * (uValue - 128) - 0.714136 * (vValue - 128))
+            .round()
+            .clamp(0, 255);
+        int b = (yValue + 1.772 * (uValue - 128)).round().clamp(0, 255);
+
+        final int rgbIndex = yIndex * 3;
+        rgb[rgbIndex] = r; // Red
+        rgb[rgbIndex + 1] = g; // Green
+        rgb[rgbIndex + 2] = b; // Blue
+      }
+    }
+
+    return rgb;
   }
 
   void _analyzeCurrentData() {

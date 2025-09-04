@@ -12,7 +12,13 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Health Monitor'),
+        title: const Row(
+          children: [
+            Icon(Icons.monitor_heart, size: 28),
+            SizedBox(width: 8),
+            Text('Health Monitor'),
+          ],
+        ),
         backgroundColor: Colors.blue[600],
         foregroundColor: Colors.white,
         elevation: 0,
@@ -43,7 +49,7 @@ class DashboardScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showMeasurementOptions(context),
-        icon: const Icon(Icons.favorite),
+        icon: const Icon(Icons.add),
         label: const Text('Measure'),
         backgroundColor: Colors.red[600],
         foregroundColor: Colors.white,
@@ -52,13 +58,19 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-        color: Colors.black87,
-      ),
+    return Row(
+      children: [
+        const Icon(Icons.health_and_safety, color: Colors.blue, size: 28),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+      ],
     );
   }
 
@@ -82,14 +94,14 @@ class DashboardScreen extends StatelessWidget {
             ),
             _buildMetricCard(
               'Blood Pressure',
-              Icons.monitor_heart,
+              Icons.heart_broken,
               Colors.orange,
               healthProvider.latestBloodPressure?.displayValue ?? '--',
               () => _navigateToMeasurement(context, 'blood_pressure'),
             ),
             _buildMetricCard(
               'HRV',
-              Icons.timeline,
+              Icons.show_chart,
               Colors.green,
               healthProvider.latestHRV?.displayValue ?? '--',
               () => _navigateToMeasurement(context, 'hrv'),
