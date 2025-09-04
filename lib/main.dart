@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'providers/health_provider.dart';
 import 'providers/medication_provider.dart';
+import 'providers/auth_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/verification_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp();
 
   // Initialize notifications
   await NotificationService.initialize();
@@ -22,6 +29,7 @@ class PPGApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => HealthProvider()),
         ChangeNotifierProvider(create: (_) => MedicationProvider()),
       ],
@@ -50,21 +58,21 @@ class PPGApp extends StatelessWidget {
           ),
           iconTheme: const IconThemeData(color: Colors.blue, size: 24),
         ),
-        home: const AppInitializer(),
+        home: const AuthWrapper(),
         debugShowCheckedModeBanner: false,
       ),
     );
   }
 }
 
-class AppInitializer extends StatefulWidget {
-  const AppInitializer({super.key});
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
 
   @override
-  State<AppInitializer> createState() => _AppInitializerState();
+  State<AuthWrapper> createState() => _AuthWrapperState();
 }
 
-class _AppInitializerState extends State<AppInitializer> {
+class _AuthWrapperState extends State<AuthWrapper> {
   bool _isInitialized = false;
 
   @override
@@ -116,6 +124,28 @@ class _AppInitializerState extends State<AppInitializer> {
       );
     }
 
-    return const DashboardScreen();
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        // Show loading while checking auth state
+        if (authProvider.user == null) {
+          return const LoginScreen();
+        }
+
+        // If user exists but email is not verified, show verification screen
+        if (authProvider.user != null && !authProvider.user!.emailVerified) {
+          return const VerificationScreen();
+        }
+
+        // If user is verified but not authenticated (needs to sign in), show login
+        if (authProvider.user != null &&
+            authProvider.user!.emailVerified &&
+            !authProvider.isAuthenticated) {
+          return const LoginScreen();
+        }
+
+        // User is authenticated, show dashboard
+        return const DashboardScreen();
+      },
+    );
   }
 }
